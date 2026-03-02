@@ -1,1 +1,96 @@
-# Reconstruction_VisualSLAM
+# Image Stitching with Covariance-Weighted MST and GTSAM
+
+A complete **2D image stitching and visual SLAM-style pipeline** that builds panoramas from multiple overlapping images using feature-based matching, robust homography estimation, a covariance-weighted minimum spanning tree (MST), and GTSAM bundle adjustment for globally consistent alignment.
+
+---
+
+## Goal of the Project
+
+The project aims to:
+
+- **Stitch multiple images** (e.g. from a moving camera or a panorama sequence) into a single, globally consistent panorama.
+- **Select reliable image connections** by building a **covariance-weighted MST**: edges with lower homography uncertainty are preferred, so the final graph is both connected and geometrically stable.
+- **Refine global geometry** with **GTSAM** (Georgia Tech Smoothing and Mapping) to optimize 2D image positions and reduce drift when chaining pairwise homographies.
+- **Compare** MST-based stitching with **GTSAM-optimized** stitching to show the benefit of global bundle adjustment.
+
+Typical use cases: panorama creation, 2D visual SLAM, reconstruction from unordered image sets, and quality analysis of pairwise homographies.
+
+---
+
+## Technical Details
+
+### Pipeline Overview
+
+1. **Image loading** — Load `.tif` images from the `29images` folder (or download a sample set from the linked repository). Images are sorted for consistent ordering.
+2. **Feature detection & matching** — **SIFT** features with **FLANN** matching and Lowe’s ratio test to get putative correspondences between all image pairs.
+3. **Homography estimation** — For each pair:
+   - **RANSAC** for initial inlier set and outlier rejection.
+   - **Levenberg–Marquardt** refinement on inliers.
+   - **Covariance** estimation from the LM solution (JᵀJ⁻¹) for uncertainty-aware edge weighting.
+4. **Covariance-weighted MST** — Build a **maximum spanning tree** where edge weights are derived from homography quality (inverse covariance). This selects a connected set of reliable pairwise links.
+5. **Absolute transforms** — **BFS** from a reference image to accumulate absolute homographies for every image in the MST.
+6. **Panorama building** — Warp all images into a common frame with **OpenCV** `warpPerspective`, then blend onto a canvas (e.g. max or average).
+7. **GTSAM 2D optimization** — Model image poses as 2D positions; add **between-factor** constraints from pairwise homographies and **prior** on the reference. Optimize with GTSAM to get globally consistent positions.
+8. **Updated homographies** — Convert optimized 2D positions back into updated absolute homographies and build a **GTSAM-optimized panorama** for comparison.
+
+### Main Algorithms & Libraries
+
+| Component            | Method / library |
+|---------------------|------------------|
+| Features            | **SIFT** (OpenCV) |
+| Matching            | **FLANN** (OpenCV), Lowe’s ratio test |
+| Homography          | **RANSAC** + **Levenberg–Marquardt** (SciPy `least_squares`) |
+| Covariance          | From LM Jacobian: σ²(JᵀJ + εI)⁻¹ |
+| Graph / MST         | **NetworkX** (covariance-weighted MST) |
+| Global optimization | **GTSAM** (NonlinearFactorGraph, 2D poses) |
+| Visualization       | **Matplotlib** |
+| Image I/O & warp    | **OpenCV** (cv2) |
+
+### Key Parameters (from `StitchingParameters`)
+
+- **Matching:** `MIN_MATCHES = 15`, `MIN_INLIER_RATIO = 0.2`, `SIFT_RATIO_THRESHOLD = 0.7`
+- **RANSAC:** `RANSAC_REPROJ_THRESHOLD = 5.0` px, `RANSAC_CONFIDENCE = 0.99`, `RANSAC_MAX_ITERS = 2000`
+- **LM:** `LM_MAX_NFEV = 1000`, `LM_FTOL = LM_XTOL = 1e-8`
+- **GTSAM:** prior sigma, max iterations, and convergence tolerances for 2D position optimization
+
+---
+
+## The pipeline in pictures
+
+To connect the images we first have to find the same points in both. The pipeline uses **SIFT** to detect keypoints and build descriptors that stay stable across scale and rotation; then for every pair of images it **matches** those descriptors with **FLANN**, keeps only the clear correspondences with **Lowe’s ratio test**, and fits a **homography** with **RANSAC** and **Levenberg–Marquardt** so we get a geometric transform and can throw away outliers. Only pairs with enough good matches and a valid homography count as connected. Not every pair is equally reliable, so we need a way to see which images actually connect and how strong those connections are.
+
+![Pairwise matching](Figures/pairwise_matching.png)
+
+Here each image is a node, and an edge means we found enough good matches and a valid homography between those two images. This is the **full connection graph**—all pairwise links before we decide which ones to use. Where the graph is dense, many views overlap; where it’s sparse or disconnected, we know we have to be careful. From this we don’t yet know *which* path through the images to use for building the panorama.
+
+So we pick a single, clean path: a **covariance-weighted maximum spanning tree (MST)**. We prefer edges where the homography is more certain (lower covariance). That gives us one tree that touches every image with no cycles—exactly the backbone we need to chain transforms from a reference image to all others and keep drift under control.
+
+![Factor graph](Figures/Factor_Graph.png)
+
+This is that tree (the **factor graph**). Each edge is a link we trust enough to use when building the panorama.
+
+We can also see how **GTSAM** refines the 2D positions: the factor graph before and after optimization shows how the global bundle adjustment pulls the image poses into a more consistent layout.
+
+![Factor graph before and after GTSAM](Figures/FACTOR_Graph_before_after_GTSAM_Optimization.png)
+
+Once we’re happy with the links, we build the panorama by adding images one at a time in the order given by the tree (e.g. a BFS from the reference). The **progressive panorama** below shows the canvas after each new image is added. You can see the mosaic grow and spot early drift or blending issues before any global optimization.
+
+![Progressive panorama](Figures/progressive_panorama.png)
+
+Finally we warp every image into one common frame and blend them.
+
+![Final panorama](Figures/final_panormama.png)
+
+---
+
+## Summary
+
+This project implements a **production-style image stitching pipeline** with:
+
+- **SIFT + FLANN** for matching  
+- **RANSAC + LM** homography estimation with **covariance**  
+- **Covariance-weighted MST** for robust connection selection  
+- **GTSAM** for global 2D position optimization  
+- **OpenCV** for warping and panorama assembly  
+
+The README documents the **goal** (consistent panorama + global optimization), **technical details** (algorithms and parameters), and **visualizations** from the `Figures/` folder.
