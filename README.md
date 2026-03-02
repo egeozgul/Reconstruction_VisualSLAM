@@ -59,7 +59,7 @@ Typical use cases: panorama creation, 2D visual SLAM, reconstruction from unorde
 
 To connect the images we first have to find the same points in both. The pipeline uses **SIFT** to detect keypoints and build descriptors that stay stable across scale and rotation; then for every pair of images it **matches** those descriptors with **FLANN**, keeps only the clear correspondences with **Lowe’s ratio test**, and fits a **homography** with **RANSAC** and **Levenberg–Marquardt** so we get a geometric transform and can throw away outliers. Only pairs with enough good matches and a valid homography count as connected. Not every pair is equally reliable, so we need a way to see which images actually connect and how strong those connections are.
 
-![Pairwise matching](Figures/pairwise_matching.png)
+![Pairwise matching](Figures/Pairwise_matching2.png)
 
 Here each image is a node, and an edge means we found enough good matches and a valid homography between those two images. This is the **full connection graph**—all pairwise links before we decide which ones to use. Where the graph is dense, many views overlap; where it’s sparse or disconnected, we know we have to be careful. From this we don’t yet know *which* path through the images to use for building the panorama.
 
