@@ -59,7 +59,7 @@ Typical use cases: panorama creation, 2D visual SLAM, reconstruction from unorde
 
 To connect the images we first have to find the same points in both. The pipeline uses **SIFT** to detect keypoints and build descriptors that stay stable across scale and rotation; then for every pair of images it **matches** those descriptors with **FLANN**, keeps only the clear correspondences with **Lowe’s ratio test**, and fits a **homography** with **RANSAC** and **Levenberg–Marquardt** so we get a geometric transform and can throw away outliers. Only pairs with enough good matches and a valid homography count as connected. Not every pair is equally reliable, so we need a way to see which images actually connect and how strong those connections are.
 
-![Pairwise matching](Figures/Pairwise_matching2.png)
+<img width="2390" height="1628" alt="download" src="https://github.com/user-attachments/assets/c0666341-c580-4139-9503-548272d61b8d" />
 
 Here each image is a node, and an edge means we found enough good matches and a valid homography between those two images. This is the **full connection graph**—all pairwise links before we decide which ones to use. Where the graph is dense, many views overlap; where it’s sparse or disconnected, we know we have to be careful. From this we don’t yet know *which* path through the images to use for building the panorama.
 
@@ -71,7 +71,17 @@ This is that tree (the **factor graph**). Each edge is a link we trust enough to
 
 We can also see how **GTSAM** refines the 2D positions: the factor graph before and after optimization shows how the global bundle adjustment pulls the image poses into a more consistent layout.
 
-![Factor graph before and after GTSAM](Figures/FACTOR_Graph_before_after_GTSAM_Optimization.png)
+<img width="1555" height="1589" alt="download" src="https://github.com/user-attachments/assets/28c1c3d4-3b48-4b8c-8f46-fbb01cd71d05" />
+
+<img width="2354" height="1181" alt="download" src="https://github.com/user-attachments/assets/a6c41948-3a31-4074-9f94-93f94f83a363" />
+
+<img width="1615" height="3961" alt="download" src="https://github.com/user-attachments/assets/b765ac34-aa53-413e-9768-c488652a27b8" />
+
+<img width="1489" height="785" alt="download" src="https://github.com/user-attachments/assets/a02de77e-9436-491e-b19a-1b9e782a1052" />
+
+<img width="1489" height="785" alt="download" src="https://github.com/user-attachments/assets/64038169-f683-4591-a173-2ad8cb9281a4" />
+
+<img width="1615" height="3961" alt="download" src="https://github.com/user-attachments/assets/88b1c33e-41b5-4f1d-a397-a146053c685d" />
 
 Once we’re happy with the links, we build the panorama by adding images one at a time in the order given by the tree (e.g. a BFS from the reference). The **progressive panorama** below shows the canvas after each new image is added. You can see the mosaic grow and spot early drift or blending issues before any global optimization.
 
