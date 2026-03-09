@@ -87,11 +87,11 @@ Once we’re happy with the links, we build the panorama by adding images one at
 
 Finally we warp every image into one common frame and blend them.
 
-## Full Panorama Before After GTSAM Optimization
-<img width="1489" height="785" alt="download" src="https://github.com/user-attachments/assets/a02de77e-9436-491e-b19a-1b9e782a1052" />
-
 ## Full Panorama Before After GTSAM Optimization - Normalized
 <img width="1489" height="785" alt="download" src="https://github.com/user-attachments/assets/64038169-f683-4591-a173-2ad8cb9281a4" />
+
+## Full Panorama Before After GTSAM Optimization
+<img width="1489" height="785" alt="download" src="https://github.com/user-attachments/assets/a02de77e-9436-491e-b19a-1b9e782a1052" />
 
 ---
 
