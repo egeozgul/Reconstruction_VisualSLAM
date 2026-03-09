@@ -1,6 +1,6 @@
 # Image Stitching with Covariance-Weighted MST and GTSAM
 
-A complete **2D image stitching and visual SLAM-style pipeline** that builds panoramas from multiple overlapping images using feature-based matching, robust homography estimation, a covariance-weighted minimum spanning tree (MST), and GTSAM bundle adjustment for globally consistent alignment.
+A complete **2D image stitching and visual SLAM-style pipeline** that builds panoramas from multiple overlapping images using feature-based matching, robust homography estimation, a covariance-weighted minimum spanning tree (MST), and GTSAM loop closure bundle adjustment for globally consistent alignment.
 
 ---
 
