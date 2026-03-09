@@ -74,7 +74,7 @@ This is that tree (the **factor graph**). Each edge is a link we trust enough to
 
 We can also see how **GTSAM** refines the 2D positions: the factor graph before and after optimization shows how the global bundle adjustment pulls the image poses into a more consistent layout.
 
-## MST Factor Graph
+## Minimum Spanning Tree (MST) Factor Graph
 <img width="1555" height="1589" alt="download" src="https://github.com/user-attachments/assets/28c1c3d4-3b48-4b8c-8f46-fbb01cd71d05" />
 
 ## Factor Graph Before After GTSAM Loop Closure Optimization 
