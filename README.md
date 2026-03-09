@@ -77,7 +77,7 @@ We can also see how **GTSAM** refines the 2D positions: the factor graph before 
 ## MST Factor Graph
 <img width="1555" height="1589" alt="download" src="https://github.com/user-attachments/assets/28c1c3d4-3b48-4b8c-8f46-fbb01cd71d05" />
 
-## Factor Graph Before After GTSAM
+## Factor Graph Before After GTSAM Loop Closure Optimization 
 <img width="2354" height="1181" alt="download" src="https://github.com/user-attachments/assets/a6c41948-3a31-4074-9f94-93f94f83a363" />
 
 Once we’re happy with the links, we build the panorama by adding images one at a time in the order given by the tree (e.g. a BFS from the reference). The **progressive panorama** below shows the canvas after each new image is added. You can see the mosaic grow and spot early drift or blending issues before any global optimization.
