@@ -42,7 +42,7 @@ Typical use cases: panorama creation, 2D visual SLAM, reconstruction from unorde
 | Homography          | **RANSAC** + **Levenberg–Marquardt** (SciPy `least_squares`) |
 | Covariance          | From LM Jacobian: σ²(JᵀJ + εI)⁻¹ |
 | Graph / MST         | **NetworkX** (covariance-weighted MST) |
-| Global optimization | **GTSAM** (NonlinearFactorGraph, 2D poses) |
+| Global optimization | **GTSAM** (NonlinearFactorGraph, 2D poses, Loop Closures) |
 | Visualization       | **Matplotlib** |
 | Image I/O & warp    | **OpenCV** (cv2) |
 
@@ -102,7 +102,7 @@ This project implements a **production-style image stitching pipeline** with:
 - **SIFT + FLANN** for matching  
 - **RANSAC + LM** homography estimation with **covariance**  
 - **Covariance-weighted MST** for robust connection selection  
-- **GTSAM** for global 2D position optimization  
+- **GTSAM** for global 2D position optimization using loop closures  
 - **OpenCV** for warping and panorama assembly  
 
 The README documents the **goal** (consistent panorama + global optimization), **technical details** (algorithms and parameters), and **visualizations** from the `Figures/` folder.
