@@ -63,7 +63,7 @@ To connect the images we first have to find the same points in both. The pipelin
 <img width="1189" height="935" alt="download" src="https://github.com/user-attachments/assets/5164ca8e-f4d6-4b8b-9be9-8845689c23ed" />
 
 ## Keypoint detection with SIFT
-<img width="2390" height="1628" alt="download" src="https://github.com/user-attachments/assets/c0666341-c580-4139-9503-548272d61b8d" />
+<img width="2390" height="2313" alt="SIFT" src="https://github.com/user-attachments/assets/445f911f-9e77-4146-a5b1-a247f1f67297" />
 
 Here each image is a node, and an edge means we found enough good matches and a valid homography between those two images. This is the **full connection graph**—all pairwise links before we decide which ones to use. Where the graph is dense, many views overlap; where it’s sparse or disconnected, we know we have to be careful. From this we don’t yet know *which* path through the images to use for building the panorama.
 
