@@ -17,6 +17,10 @@ Typical use cases: panorama creation, 2D visual SLAM, reconstruction from unorde
 
 ---
 
+## Dataset
+
+The underwater imagery used in this project was sourced from the Skerki D wreck dataset, collected at Skerki Bank in the Mediterranean Sea using the Jason remotely operated vehicle (ROV) by the Woods Hole Oceanographic Institution (WHOI). The dataset consists of 233 images covering approximately 350 square meters of an ancient shipwreck site and was originally presented in Pizarro and Singh (2003), "Toward Large-Area Mosaicing for Underwater Scientific Applications," IEEE Journal of Oceanic Engineering, Vol. 28, No. 4.
+
 ## Technical Details
 
 ### Pipeline Overview
