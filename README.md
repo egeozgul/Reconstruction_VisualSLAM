@@ -1,13 +1,20 @@
 # Image Stitching with Covariance-Weighted MST and GTSAM
+
+
 A 2D image stitching pipeline that assembles overlapping images into a globally consistent panorama. The pipeline combines feature-based matching, robust homography estimation, covariance-weighted graph construction, and GTSAM-based bundle adjustment to minimize accumulated drift across long image sequences.
 
 # Overview
+
 Stitching multiple images into a coherent panorama is straightforward for short sequences, but pairwise chaining of homographies accumulates geometric error quickly — small misalignments compound with each added image, producing visible drift and seam artifacts in the final mosaic.
 This project addresses that problem at two levels:
 
-## Graph construction — Rather than chaining images in a fixed order, all pairwise overlaps are computed and organized into a covariance-weighted Minimum Spanning Tree (MST). Each edge weight reflects the geometric uncertainty of its homography estimate, so the MST selects the most reliable connections to form the stitching backbone. Unstable or poorly-conditioned matches are naturally deprioritized.
+## Graph construction
 
-## Global refinement — The MST gives a good initial structure, but residual errors remain. A GTSAM pose graph then treats each image as a 2D node and each homography as a relative pose constraint. Critically, images that are spatially close but far apart in acquisition order — loop closures — are detected and added as additional constraints. These cross-links break the open chain topology that causes drift, and bundle adjustment then jointly optimizes all image positions against the full constraint set, distributing error globally.
+Rather than chaining images in a fixed order, all pairwise overlaps are computed and organized into a covariance-weighted Minimum Spanning Tree (MST). Each edge weight reflects the geometric uncertainty of its homography estimate, so the MST selects the most reliable connections to form the stitching backbone. Unstable or poorly-conditioned matches are naturally deprioritized.
+
+## Global refinement
+
+The MST gives a good initial structure, but residual errors remain. A GTSAM pose graph then treats each image as a 2D node and each homography as a relative pose constraint. Critically, images that are spatially close but far apart in acquisition order — loop closures — are detected and added as additional constraints. These cross-links break the open chain topology that causes drift, and bundle adjustment then jointly optimizes all image positions against the full constraint set, distributing error globally.
 
 ---
 
